@@ -66,6 +66,10 @@ void loop()
   display.print(sensors.getTempCByIndex(0), 2);
   display.print(" C");
 
+  // Ultrasound probe
+  // display.setCursor(0, 20);
+  // display.print("Hello!");
+
   // DateTime now = rtc.now(); // Get current date/time
 
   // Serial.println("Day: " + String(now.day()));
