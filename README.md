@@ -16,3 +16,8 @@ This project is inspired by the following sources:
 - https://clevercoffee.de/gaggia-classic-9480/
 - https://clevercoffee.de/rancilio-silvia-e-konstantin/
 - https://clevercoffee.de/rancilio-silvia-e-sebi/
+- https://www.youtube.com/watch?v=AzQRCUg6E9g
+- https://optimalprimate.github.io/projects/2020/11/14/coffee.html
+- https://github.com/mwood77/koffie
+  - https://www.seattlecoffeegear.com/cdn/shop/files/silvia-pid-installation-guide.pdf?v=8847236618586878957
+
