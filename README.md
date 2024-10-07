@@ -11,5 +11,8 @@ DIY project to pimp up my espresso machine to display various measures
 This project is inspired by the following sources:
 - https://www.youtube.com/watch?v=4V0a9dfkx9Q
 - https://github.com/PostModernDesign/RancilioBrain/blob/master/RancilioBrain.md
-
 - https://github.com/urbantrout/bleeding-edge-ranciliopid/tree/master?tab=readme-ov-file
+- https://clevercoffee.de/rancilio-silvia-demontage/
+- https://clevercoffee.de/gaggia-classic-9480/
+- https://clevercoffee.de/rancilio-silvia-e-konstantin/
+- https://clevercoffee.de/rancilio-silvia-e-sebi/
