@@ -19,6 +19,12 @@ OneWire oneWire(ONE_WIRE_BUS);
 // Pass our oneWire reference to Dallas Temperature sensor 
 DallasTemperature sensors(&oneWire);
 
+// Pressure sensor
+int sensorPin = A1;
+float vout = 0.0;
+float vin = 0.0;
+float pressure = 0.0;
+
 /* Create an rtc object */
 RTC_DS3231 rtc;
 
@@ -45,7 +51,10 @@ void setup() {
   delay(2000);
 
   // Temperature sensor
-  sensors.begin();  
+  sensors.begin();
+
+  // Pressure sensor
+  pinMode(sensorPin, INPUT);
 }
 
 void loop()
@@ -65,6 +74,9 @@ void loop()
 
   display.print(sensors.getTempCByIndex(0), 2);
   display.print(" C");
+
+  // Pressure sensor
+  measurePressure();
 
   // Ultrasound probe
   // display.setCursor(0, 20);
@@ -104,4 +116,15 @@ void print2digits(int number) {
     display.print("0"); // Print a 0 before if the number is < 10
   }
   display.print(number);
+}
+
+void measurePressure() {
+  int voltage = analogRead(sensorPin);
+  vin = (voltage * 5.0) / 1024.0;
+  pressure = (vin * 20) - 10;
+  // print out the value you read:
+  Serial.print(pressure,2);
+  Serial.print(" bar pressure with: ");
+  Serial.print(vin);
+  Serial.println("V measured voltage.");
 }
