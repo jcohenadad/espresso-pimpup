@@ -5,6 +5,7 @@
 #include <Adafruit_SSD1306.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <SoftwareSerial.h> // for ultrasonic-- might not be needed
 
 // Display
 #define SCREEN_WIDTH 128
@@ -25,6 +26,12 @@ float vout = 0.0;
 float vin = 0.0;
 float pressure = 0.0;
 
+// Ultrasonic distance sensor
+const int trigPin = 9;
+const int echoPin = 10;
+long duration;
+int distance;
+
 /* Create an rtc object */
 RTC_DS3231 rtc;
 
@@ -33,7 +40,7 @@ void setup() {
 
   delay(1000);  // Give some time for Serial communication to stabilize
 
-  // Print to Serial Monitor before initializing the OLED
+  // OLED
   Serial.println("Starting OLED initialization...");
   // Initialize the 128x64 OLED display at the correct I2C address (check from scanner)
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {  // Address 0x3C for 128x64
@@ -41,7 +48,6 @@ void setup() {
     for (;;); // Don't proceed, loop forever
   }
   Serial.println("OLED initialized successfully!");
-
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(2);
@@ -55,6 +61,10 @@ void setup() {
 
   // Pressure sensor
   pinMode(sensorPin, INPUT);
+
+  // Ultrasound
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
 }
 
 void loop()
@@ -69,16 +79,45 @@ void loop()
   // Call sensors.requestTemperatures() to issue a global temperature and Requests to all devices on the bus
   sensors.requestTemperatures(); 
   
-  Serial.print("Celsius temperature: ");
+  Serial.print("Temp [°C]: ");
   Serial.println(sensors.getTempCByIndex(0)); // Why "byIndex"? You can have more than one IC on the same bus. 0 refers to the first IC on the wire
 
   display.print(sensors.getTempCByIndex(0), 2);
   display.print(" C");
 
   // Pressure sensor
-  measurePressure();
+  int pressure_voltage = analogRead(sensorPin);
+  vin = (pressure_voltage * 5.0) / 1024.0;
+  pressure = (vin * 20) - 10;
+  // print out the value you read:
+  Serial.print("Pressure [Bar]: ");
+  Serial.print(pressure,2);
+  Serial.print("  Voltage: ");
+  Serial.println(vin);
+  // Display on OLED
+  display.setCursor(0, 24);
+  display.print(pressure, 2);
+  display.print(" Bar");
 
-  // Ultrasound probe
+  // Ultrasound
+  digitalWrite(trigPin, LOW);  // Clears the trigPin
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2;
+  // Prints the distance on the Serial Monitor
+  Serial.print("Distance [cm]: ");
+  Serial.println(distance);
+  // Display on OLED
+  display.setCursor(0, 48);
+  display.print((int)distance);
+  display.print(" cm");
+
   // display.setCursor(0, 20);
   // display.print("Hello!");
 
@@ -108,7 +147,7 @@ void loop()
 
   display.display(); // Print to display
 
-  delay(1000);
+  delay(500);
 }
 
 void print2digits(int number) {
@@ -116,15 +155,4 @@ void print2digits(int number) {
     display.print("0"); // Print a 0 before if the number is < 10
   }
   display.print(number);
-}
-
-void measurePressure() {
-  int voltage = analogRead(sensorPin);
-  vin = (voltage * 5.0) / 1024.0;
-  pressure = (vin * 20) - 10;
-  // print out the value you read:
-  Serial.print(pressure,2);
-  Serial.print(" bar pressure with: ");
-  Serial.print(vin);
-  Serial.println("V measured voltage.");
 }
