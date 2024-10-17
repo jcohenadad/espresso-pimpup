@@ -121,7 +121,7 @@ void loop()
   // Calculating the distance
   distance = duration * 0.034 / 2;
   // Convert distance to percentage of water tank level in percentage
-  float water_level = 100 * (distance - distance_full) / (distance_empty - distance_full);
+  float water_level = 100 - 100 * (distance - distance_full) / (distance_empty - distance_full);
   // Prints the distance on the Serial Monitor
   Serial.print("Distance [cm]: ");
   Serial.println(distance);
