@@ -26,11 +26,14 @@ float vout = 0.0;
 float vin = 0.0;
 float pressure = 0.0;
 
-// Ultrasonic distance sensor
+// Ultrasonic distance sensor (water tank level)
 const int trigPin = 9;
 const int echoPin = 10;
 long duration;
-int distance;
+float distance;
+// Values below need to be calibrated
+const float distance_full = 5;  // cm
+const float distance_empty = 20;  // cm
 
 /* Create an rtc object */
 RTC_DS3231 rtc;
@@ -76,16 +79,18 @@ void loop()
   display.clearDisplay();
   display.setCursor(0, 0);
 
+  // Temperature
+  // ==========================================================================
   // Call sensors.requestTemperatures() to issue a global temperature and Requests to all devices on the bus
   sensors.requestTemperatures(); 
-  
   Serial.print("Temp [°C]: ");
   Serial.println(sensors.getTempCByIndex(0)); // Why "byIndex"? You can have more than one IC on the same bus. 0 refers to the first IC on the wire
-
+  // Display on OLED
   display.print(sensors.getTempCByIndex(0), 2);
   display.print(" C");
 
   // Pressure sensor
+  // ==========================================================================
   int pressure_voltage = analogRead(sensorPin);
   vin = (pressure_voltage * 5.0) / 1024.0;
   pressure = (vin * 20) - 10;
@@ -103,7 +108,8 @@ void loop()
   display.print(pressure, 2);
   display.print(" Bar");
 
-  // Ultrasound
+  // Water tank level
+  // ==========================================================================
   digitalWrite(trigPin, LOW);  // Clears the trigPin
   delayMicroseconds(2);
   // Sets the trigPin on HIGH state for 10 micro seconds
@@ -114,13 +120,17 @@ void loop()
   duration = pulseIn(echoPin, HIGH);
   // Calculating the distance
   distance = duration * 0.034 / 2;
+  // Convert distance to percentage of water tank level in percentage
+  float water_level = 100 * (distance - distance_full) / (distance_empty - distance_full);
   // Prints the distance on the Serial Monitor
   Serial.print("Distance [cm]: ");
   Serial.println(distance);
+  Serial.print("  Water tank [%]: ");
+  Serial.println((int)water_level);
   // Display on OLED
   display.setCursor(0, 48);
-  display.print((int)distance);
-  display.print(" cm");
+  display.print((int)water_level);
+  display.print(" %");
 
   // display.setCursor(0, 20);
   // display.print("Hello!");
