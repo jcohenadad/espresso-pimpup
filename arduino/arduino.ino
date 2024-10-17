@@ -89,6 +89,10 @@ void loop()
   int pressure_voltage = analogRead(sensorPin);
   vin = (pressure_voltage * 5.0) / 1024.0;
   pressure = (vin * 20) - 10;
+  // Clip pressure at 0 if voltage is below 0.5V
+  if (vin < 0.5) {
+    pressure = 0.0;
+  }
   // print out the value you read:
   Serial.print("Pressure [Bar]: ");
   Serial.print(pressure,2);
