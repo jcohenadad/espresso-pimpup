@@ -86,7 +86,7 @@ void loop()
   Serial.print("Temp [°C]: ");
   Serial.println(sensors.getTempCByIndex(0)); // Why "byIndex"? You can have more than one IC on the same bus. 0 refers to the first IC on the wire
   // Display on OLED
-  display.print(sensors.getTempCByIndex(0), 2);
+  display.print(sensors.getTempCByIndex(0), 1);
   display.print(" C");
 
   // Pressure sensor
@@ -105,7 +105,7 @@ void loop()
   Serial.println(vin);
   // Display on OLED
   display.setCursor(0, 24);
-  display.print(pressure, 2);
+  display.print(pressure, 1);
   display.print(" Bar");
 
   // Water tank level
@@ -161,7 +161,7 @@ void loop()
 
   display.display(); // Print to display
 
-  delay(500);
+  delay(100);
 }
 
 void print2digits(int number) {
