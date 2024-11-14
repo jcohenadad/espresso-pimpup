@@ -7,6 +7,9 @@
 #include <DallasTemperature.h>
 #include <SoftwareSerial.h> // for ultrasonic-- might not be needed
 
+// Debugging
+#define DEBUG_MODE true
+
 // Display
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -72,94 +75,52 @@ void setup() {
 
 void loop()
 {
-  // Serial.println("Hello world!");
-  // delay(1000);
+  // Read Temperature
+  sensors.requestTemperatures();
+  float temperature = sensors.getTempCByIndex(0);
 
-  // Clear the display buffer
-  display.clearDisplay();
-  display.setCursor(0, 0);
-
-  // Temperature
-  // ==========================================================================
-  // Call sensors.requestTemperatures() to issue a global temperature and Requests to all devices on the bus
-  sensors.requestTemperatures(); 
-  Serial.print("Temp [°C]: ");
-  Serial.println(sensors.getTempCByIndex(0)); // Why "byIndex"? You can have more than one IC on the same bus. 0 refers to the first IC on the wire
-  // Display on OLED
-  display.print(sensors.getTempCByIndex(0), 1);
-  display.print(" C");
-
-  // Pressure sensor
-  // ==========================================================================
+  // Read Pressure
   int pressure_voltage = analogRead(sensorPin);
   vin = (pressure_voltage * 5.0) / 1024.0;
-  pressure = (vin * 20) - 10;
-  // Clip pressure at 0 if voltage is below 0.5V
-  if (vin < 0.5) {
-    pressure = 0.0;
-  }
-  // print out the value you read:
-  Serial.print("Pressure [Bar]: ");
-  Serial.print(pressure,2);
-  Serial.print("  Voltage: ");
-  Serial.println(vin);
-  // Display on OLED
+  pressure = (vin < 0.5) ? 0.0 : (vin * 20) - 10;  // Clip pressure at 0 if vin < 0.5
+
+  // Read Water Tank Level
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+  float water_level = 100 - 100 * (distance - distance_full) / (distance_empty - distance_full);
+
+  // Update OLED Display
+  display.fillRect(0, 0, 128, 16, SSD1306_BLACK);  // Clear temperature section
+  display.setCursor(0, 0);
+  display.print(temperature, 1);
+  display.print(" C");
+
+  display.fillRect(0, 24, 128, 16, SSD1306_BLACK);  // Clear pressure section
   display.setCursor(0, 24);
   display.print(pressure, 1);
   display.print(" Bar");
 
-  // Water tank level
-  // ==========================================================================
-  digitalWrite(trigPin, LOW);  // Clears the trigPin
-  delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
-  // Calculating the distance
-  distance = duration * 0.034 / 2;
-  // Convert distance to percentage of water tank level in percentage
-  float water_level = 100 - 100 * (distance - distance_full) / (distance_empty - distance_full);
-  // Prints the distance on the Serial Monitor
-  Serial.print("Distance [cm]: ");
-  Serial.println(distance);
-  Serial.print("  Water tank [%]: ");
-  Serial.println((int)water_level);
-  // Display on OLED
+  display.fillRect(0, 48, 128, 16, SSD1306_BLACK);  // Clear water level section
   display.setCursor(0, 48);
   display.print((int)water_level);
   display.print(" %");
 
-  // display.setCursor(0, 20);
-  // display.print("Hello!");
+  display.display();
 
-  // DateTime now = rtc.now(); // Get current date/time
-
-  // Serial.println("Day: " + String(now.day()));
-
-  // display.clearDisplay(); // Clears display
-  // display.setTextColor(SSD1306_WHITE); // Sets color to white
-  // display.setTextSize(2); // Sets text size to 2
-  // display.setCursor(0, 0); // X, Y starting coordinates
-
-  // print2digits(now.day());   // Retrieve day 
-  // display.print("/");
-  // print2digits(now.month()); // Retrieve month
-  // display.print("/");
-  // print2digits(now.year() - 2000); // Retrieve year (last two digits)
-
-  // // Serial.println("Day: " + String(now.day()));
-
-  // display.setCursor(0, 18); // Change cursor to second row
-  // print2digits(now.hour());   // Retrieve hours
-  // display.print(":");
-  // print2digits(now.minute()); // Retrieve minutes
-  // display.print(":");
-  // print2digits(now.second()); // Retrieve seconds
-
-  display.display(); // Print to display
+  // Debug output
+  if (DEBUG_MODE) {
+    Serial.print("Temp [°C]: ");
+    Serial.println(temperature);
+    Serial.print("Pressure [Bar]: ");
+    Serial.println(pressure);
+    Serial.print("Water Tank [%]: ");
+    Serial.println(water_level);
+  }
 
   delay(100);
 }
