@@ -21,4 +21,5 @@ This project is inspired by the following sources:
 - https://github.com/mwood77/koffie
   - https://www.seattlecoffeegear.com/cdn/shop/files/silvia-pid-installation-guide.pdf?v=8847236618586878957
 - https://www.reddit.com/r/ranciliosilvia/search/?q=pid&cId=b4224602-a8c1-4eaf-a334-e28db799d089&iId=4bad28b5-60e2-4aab-9f05-2a9fabc166d9
+- https://github.com/brycesub/silvia-pi?tab=readme-ov-file
 
