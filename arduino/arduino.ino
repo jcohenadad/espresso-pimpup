@@ -122,7 +122,7 @@ void loop()
     Serial.println(water_level);
   }
 
-  delay(100);
+  delay(500);
 }
 
 void print2digits(int number) {
