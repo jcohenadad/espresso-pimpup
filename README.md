@@ -4,7 +4,10 @@ DIY project to pimp up my espresso machine to display various measures
 
 ## Material
 
-- [Ultrasonic sensor PWM DC5V RS485](https://www.aliexpress.com/item/1005004673620129.html?spm=a2g0o.order_detail.order_detail_item.3.2aaef19clmxmlWNEW)
+- [Ultrasonic sensor HC-SR04](https://www.amazon.ca/dp/B07RGB4W8V?ref=ppx_yo2ov_dt_b_fed_asin_title&th=1)
+- Temperature
+  - [K Type Thermocouple Temperature Sensor](https://www.amazon.ca/MECCANIXITY-Thermocouple-Temperature-Sensor-Stainless/dp/B0C998V2DP)
+  - [Thermocouple Amplifier MAX31855](https://www.amazon.ca/dp/B00SK8NDAI)
 
 ## References
 
