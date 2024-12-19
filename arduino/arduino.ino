@@ -110,21 +110,21 @@ void loop()
 
   // Update Display
   // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
-  tft.setTextColor(ST77XX_WHITE);
+  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
   tft.setCursor(10, 10);
   tft.setTextSize(3);
   tft.print("Temp: ");
   tft.print(temperature, 1);
   tft.print(" C");
 
-  tft.setTextColor(ST77XX_WHITE);
+  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
   tft.setCursor(10, 50);
   tft.setTextSize(3);
   tft.print("Pressure: ");
   tft.print(pressure, 1);
   tft.print(" Bar");
 
-  tft.setTextColor(ST77XX_WHITE);
+  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
   tft.setCursor(10, 90);
   tft.setTextSize(3);
   tft.print("Water: ");
