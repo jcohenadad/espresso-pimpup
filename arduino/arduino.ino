@@ -108,41 +108,28 @@ void loop()
   distance = duration * 0.034 / 2;
   float water_level = 100 - 100 * (distance - distance_full) / (distance_empty - distance_full);
 
-
-  // tft.init(240, 280);  // Init ST7789 280x240
-  // tft.setRotation(3);  // rotate clockwise by 270°
-  // tft.setTextWrap(false);
-  tft.setCursor(15, 130);
-  tft.setTextSize(2);
-  tft.setTextColor(ST77XX_WHITE);
-  tft.print("blablabla");
-  delay(2000);
-
   // Update Display
   // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
-  // tft.setTextColor(ST77XX_WHITE);
-  // tft.setCursor(10, 10);
-  // tft.setTextSize(2);
-  // tft.print("Temp: ");
-  // tft.print(temperature, 1);
-  // tft.print(" C");
+  tft.setTextColor(ST77XX_WHITE);
+  tft.setCursor(10, 10);
+  tft.setTextSize(3);
+  tft.print("Temp: ");
+  tft.print(temperature, 1);
+  tft.print(" C");
 
-  // display.fillRect(0, 0, 128, 16, SSD1306_BLACK);  // Clear temperature section
-  // display.setCursor(0, 0);
-  // display.print(temperature, 1);
-  // display.print(" C");
+  tft.setTextColor(ST77XX_WHITE);
+  tft.setCursor(10, 50);
+  tft.setTextSize(3);
+  tft.print("Pressure: ");
+  tft.print(pressure, 1);
+  tft.print(" Bar");
 
-  // display.fillRect(0, 24, 128, 16, SSD1306_BLACK);  // Clear pressure section
-  // display.setCursor(0, 24);
-  // display.print(pressure, 1);
-  // display.print(" Bar");
-
-  // display.fillRect(0, 48, 128, 16, SSD1306_BLACK);  // Clear water level section
-  // display.setCursor(0, 48);
-  // display.print((int)water_level);
-  // display.print(" %");
-
-  // display.display();
+  tft.setTextColor(ST77XX_WHITE);
+  tft.setCursor(10, 90);
+  tft.setTextSize(3);
+  tft.print("Water: ");
+  tft.print((int)water_level, 1);
+  tft.print(" %");
 
   // Debug output
   if (DEBUG_MODE) {
