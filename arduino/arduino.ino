@@ -14,9 +14,9 @@
 #define DEBUG_MODE true
 
 // Display
-#define TFT_CS        10
+#define TFT_CS        10 // chip select
 #define TFT_RST        9 // Or set to -1 and connect to Arduino RESET pin
-#define TFT_DC         8
+#define TFT_DC         8 // data/command
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 
 // Temperature sensor
@@ -33,8 +33,8 @@ float vin = 0.0;
 float pressure = 0.0;
 
 // Ultrasonic distance sensor (water tank level)
-const int trigPin = 12;
-const int echoPin = 13;
+const int trigPin = 3;
+const int echoPin = 4;
 long duration;
 float distance;
 // Values below need to be calibrated
@@ -51,14 +51,23 @@ void setup() {
 
   // Initialize display
   // Serial.print(F("Hello!"));
-  tft.init(240, 280);           // Init ST7789 280x240
+  tft.init(240, 280);  // Init ST7789 280x240
+  tft.setRotation(3);  // rotate clockwise by 270°
   tft.setTextWrap(false);
   tft.fillScreen(ST77XX_BLACK);
-  tft.setCursor(0, 30);
+
+  // Display welcome message
   tft.setTextColor(ST77XX_YELLOW);
+  tft.setTextSize(3);
+  tft.setCursor(30, 90);
+  tft.print("Hello Julien!");
+  delay(1000);
+  tft.setCursor(15, 130);
   tft.setTextSize(2);
-  tft.println("Hello World!");
-  delay(500);
+  tft.setTextColor(ST77XX_WHITE);
+  tft.print("ready for some coffee?");
+  delay(2000);
+  tft.fillScreen(ST77XX_BLACK);
 
   // display.clearDisplay();
   // display.setTextColor(SSD1306_WHITE);
@@ -99,7 +108,25 @@ void loop()
   distance = duration * 0.034 / 2;
   float water_level = 100 - 100 * (distance - distance_full) / (distance_empty - distance_full);
 
+
+  // tft.init(240, 280);  // Init ST7789 280x240
+  // tft.setRotation(3);  // rotate clockwise by 270°
+  // tft.setTextWrap(false);
+  tft.setCursor(15, 130);
+  tft.setTextSize(2);
+  tft.setTextColor(ST77XX_WHITE);
+  tft.print("blablabla");
+  delay(2000);
+
   // Update Display
+  // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
+  // tft.setTextColor(ST77XX_WHITE);
+  // tft.setCursor(10, 10);
+  // tft.setTextSize(2);
+  // tft.print("Temp: ");
+  // tft.print(temperature, 1);
+  // tft.print(" C");
+
   // display.fillRect(0, 0, 128, 16, SSD1306_BLACK);  // Clear temperature section
   // display.setCursor(0, 0);
   // display.print(temperature, 1);
