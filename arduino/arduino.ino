@@ -6,15 +6,18 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <SoftwareSerial.h> // for ultrasonic-- might not be needed
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+#include <SPI.h>
 
 // Debugging
 #define DEBUG_MODE true
 
 // Display
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+#define TFT_CS        10
+#define TFT_RST        9 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_DC         8
+Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 
 // Temperature sensor
 #define ONE_WIRE_BUS 2 // PIN number on Arduino for data (yellow wire)
@@ -30,8 +33,8 @@ float vin = 0.0;
 float pressure = 0.0;
 
 // Ultrasonic distance sensor (water tank level)
-const int trigPin = 9;
-const int echoPin = 10;
+const int trigPin = 12;
+const int echoPin = 13;
 long duration;
 float distance;
 // Values below need to be calibrated
@@ -46,21 +49,23 @@ void setup() {
 
   delay(1000);  // Give some time for Serial communication to stabilize
 
-  // OLED
-  Serial.println("Starting OLED initialization...");
-  // Initialize the 128x64 OLED display at the correct I2C address (check from scanner)
-  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {  // Address 0x3C for 128x64
-    Serial.println(F("SSD1306 allocation failed"));
-    for (;;); // Don't proceed, loop forever
-  }
-  Serial.println("OLED initialized successfully!");
-  display.clearDisplay();
-  display.setTextColor(SSD1306_WHITE);
-  display.setTextSize(2);
-  display.setCursor(0, 0);
-  display.print("Hello :)");
-  display.display(); // Update the display with the new content
-  delay(2000);
+  // Initialize display
+  // Serial.print(F("Hello!"));
+  tft.init(240, 280);           // Init ST7789 280x240
+  tft.setTextWrap(false);
+  tft.fillScreen(ST77XX_BLACK);
+  tft.setCursor(0, 30);
+  tft.setTextColor(ST77XX_YELLOW);
+  tft.setTextSize(2);
+  tft.println("Hello World!");
+  delay(500);
+
+  // display.clearDisplay();
+  // display.setTextColor(SSD1306_WHITE);
+  // display.setTextSize(2);
+  // display.setCursor(0, 0);
+  // display.print("Hello :)");
+  // display.display(); // Update the display with the new content
 
   // Temperature sensor
   sensors.begin();
@@ -94,23 +99,23 @@ void loop()
   distance = duration * 0.034 / 2;
   float water_level = 100 - 100 * (distance - distance_full) / (distance_empty - distance_full);
 
-  // Update OLED Display
-  display.fillRect(0, 0, 128, 16, SSD1306_BLACK);  // Clear temperature section
-  display.setCursor(0, 0);
-  display.print(temperature, 1);
-  display.print(" C");
+  // Update Display
+  // display.fillRect(0, 0, 128, 16, SSD1306_BLACK);  // Clear temperature section
+  // display.setCursor(0, 0);
+  // display.print(temperature, 1);
+  // display.print(" C");
 
-  display.fillRect(0, 24, 128, 16, SSD1306_BLACK);  // Clear pressure section
-  display.setCursor(0, 24);
-  display.print(pressure, 1);
-  display.print(" Bar");
+  // display.fillRect(0, 24, 128, 16, SSD1306_BLACK);  // Clear pressure section
+  // display.setCursor(0, 24);
+  // display.print(pressure, 1);
+  // display.print(" Bar");
 
-  display.fillRect(0, 48, 128, 16, SSD1306_BLACK);  // Clear water level section
-  display.setCursor(0, 48);
-  display.print((int)water_level);
-  display.print(" %");
+  // display.fillRect(0, 48, 128, 16, SSD1306_BLACK);  // Clear water level section
+  // display.setCursor(0, 48);
+  // display.print((int)water_level);
+  // display.print(" %");
 
-  display.display();
+  // display.display();
 
   // Debug output
   if (DEBUG_MODE) {
@@ -127,7 +132,7 @@ void loop()
 
 void print2digits(int number) {
   if (number < 10) {
-    display.print("0"); // Print a 0 before if the number is < 10
+    tft.print("0"); // Print a 0 before if the number is < 10
   }
-  display.print(number);
+  tft.print(number);
 }
