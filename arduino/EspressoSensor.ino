@@ -1,10 +1,9 @@
 #include <RTClib.h>
 #include <Arduino.h>
-#include <U8g2lib.h>
+// #include <U8g2lib.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+#include <Adafruit_MAX31855.h> // for thermal sensor
 #include <SoftwareSerial.h> // for ultrasonic-- might not be needed
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
@@ -20,11 +19,8 @@
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 
 // Temperature sensor
-#define ONE_WIRE_BUS 2 // PIN number on Arduino for data (yellow wire)
-// Setup a oneWire instance to communicate with any OneWire devices
-OneWire oneWire(ONE_WIRE_BUS);
-// Pass our oneWire reference to Dallas Temperature sensor 
-DallasTemperature sensors(&oneWire);
+#define MAX_CS        6
+Adafruit_MAX31855 thermocouple(MAX_CS);
 
 // Pressure sensor
 int sensorPin = A1;
@@ -76,9 +72,6 @@ void setup() {
   // display.print("Hello :)");
   // display.display(); // Update the display with the new content
 
-  // Temperature sensor
-  sensors.begin();
-
   // Pressure sensor
   pinMode(sensorPin, INPUT);
 
@@ -90,8 +83,11 @@ void setup() {
 void loop()
 {
   // Read Temperature
-  sensors.requestTemperatures();
-  float temperature = sensors.getTempCByIndex(0);
+  float temperature = thermocouple.readCelsius();
+  // Error handling
+  if (isnan(temperature)) {
+    temperature = -1000;
+  }
 
   // Read Pressure
   int pressure_voltage = analogRead(sensorPin);
