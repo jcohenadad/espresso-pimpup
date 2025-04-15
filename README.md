@@ -8,6 +8,9 @@ DIY project to pimp up my espresso machine to display various measures
 - Temperature
   - [K Type Thermocouple Temperature Sensor](https://www.amazon.ca/MECCANIXITY-Thermocouple-Temperature-Sensor-Stainless/dp/B0C998V2DP)
   - [Thermocouple Amplifier MAX31855](https://www.amazon.ca/dp/B00SK8NDAI)
+- Water level
+  - [FDC1004DGSR](https://www.digikey.ca/en/products/detail/texas-instruments/FDC1004DGSR/5250523) | 4-channel 16-bit capacitance-to-digital converter
+  - [LCQT-MSOP10](https://www.digikey.ca/en/products/detail/aries-electronics/LCQT-MSOP10/4754589) | To create the breakout board for the FDC1004 chip
 
 ## References
 
