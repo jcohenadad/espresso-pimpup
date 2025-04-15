@@ -11,6 +11,9 @@ DIY project to pimp up my espresso machine to display various measures
 - Water level
   - [FDC1004DGSR](https://www.digikey.ca/en/products/detail/texas-instruments/FDC1004DGSR/5250523) | 4-channel 16-bit capacitance-to-digital converter
   - [LCQT-MSOP10](https://www.digikey.ca/en/products/detail/aries-electronics/LCQT-MSOP10/4754589) | To create the breakout board for the FDC1004 chip
+  - [WR-PHD 2.54 MM SOCKET HEADER 5 P](https://www.digikey.ca/en/products/detail/w%C3%BCrth-elektronik/61300511821/16608594) x 2 | To plug the breakout board on the main PCB
+  - [C0603C104M4RACTU](https://www.digikey.ca/en/products/detail/kemet/C0603C104M4RACTU/411098) | Decoupling Capacitors
+  - [RC0603FR-074K7L](https://www.digikey.ca/en/products/detail/yageo/rc0603fr-074k7l/727212) | Pull-up Resistors for I2C
 
 ## References
 
