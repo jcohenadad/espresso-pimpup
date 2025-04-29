@@ -6,6 +6,7 @@ DIY project to pimp up my espresso machine to display various measures
 
 - Display
   - [Graphic LCD Display Module IPS (In-Plane Switching) SPI 1.69"](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/104990802/21526011)
+  - [JST 8-Pin Connector 1.0mm 30cm]()
 - Temperature
   - [K Type Thermocouple Temperature Sensor](https://www.amazon.ca/MECCANIXITY-Thermocouple-Temperature-Sensor-Stainless/dp/B0C998V2DP)
   - [Thermocouple Amplifier MAX31855](https://www.amazon.ca/dp/B00SK8NDAI)
