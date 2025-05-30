@@ -11,6 +11,7 @@
 
 // Debugging
 #define DEBUG_MODE true
+#define DEBUG_CAPACITANCE true
 
 // Display
 #define TFT_CS        10 // chip select
@@ -31,11 +32,11 @@ float pressure = 0.0;
 // Capacitive coupling (water level)
 #define UPPER_BOUND  0X4000                 // max readout capacitance
 #define LOWER_BOUND  (-1 * UPPER_BOUND)
-#define CHANNEL 0                          // channel to be read
-#define MEASURMENT 0                       // measurment channel
+#define CHANNEL 0                          // channel of the FDC1004 to be read
+#define MEASUREMENT 0                       // measurEment channel
 int capdac = 0;
 char result[100];
-FDC1004 FDC;
+FDC1004 fdc; // Create an FDC1004 object
 
 /* Create an rtc object */
 RTC_DS3231 rtc;
@@ -74,6 +75,9 @@ void setup() {
 
   // Pressure sensor
   pinMode(sensorPin, INPUT);
+
+  // Initialize the FDC1004
+  Wire.begin();  // Initialize I2C communication  
 }
 
 void loop()
@@ -91,32 +95,26 @@ void loop()
   pressure = (vin < 0.5) ? 0.0 : (vin * 20) - 10;  // Clip pressure at 0 if vin < 0.5
 
   // Read Water Tank Level
-  FDC.configureMeasurementSingle(MEASURMENT, CHANNEL, capdac);
-  FDC.triggerSingleMeasurement(MEASURMENT, FDC1004_100HZ);
-  delay(500); // wait for completion
+  fdc.configureMeasurementSingle(MEASUREMENT, CHANNEL, capdac);
+  fdc.triggerSingleMeasurement(MEASUREMENT, FDC1004_100HZ);
+  delay(10); // Must wait at least 9ms for conversion
   uint16_t value[2];
-  if (! FDC.readMeasurement(MEASURMENT, value))
+  // If readMeasurement returns false, it means the reading was successful
+  if (! fdc.readMeasurement(MEASUREMENT, value))
   {
-    int16_t msb = (int16_t) value[0];
-    int32_t capacitance = ((int32_t)457) * ((int32_t)msb); //in attofarads
-    capacitance /= 1000;   //in femtofarads
-    capacitance += ((int32_t)3028) * ((int32_t)capdac);
-    Serial.print((((float)capacitance/1000)),4);
+    int16_t msb = (int16_t) value[0];  // Most significant byte
+    int32_t capacitance = ((int32_t)457) * ((int32_t)msb);  // Gain factor: 457 (datasheet says 16-bit range = ±16.384pF → gain ≈ 16.384pF / 2^15 ≈ 500 af/LSB; here it's 457 af/LSB).
+    capacitance /= 1000;  // Convert to femtofarads (fF) for easier handling
+    Serial.print("Capacitance: ");
+    Serial.print(capacitance);
+    Serial.println(" fF");
+    capacitance += ((int32_t)3028) * ((int32_t)capdac);  // Offset factor: 3028
+    Serial.print((((float)capacitance/1000)),4);  // Prints the capacitance in picofarads, to 4 decimal places.
     Serial.println("  pf, ");
-    // TODO: put code below in function
-    if (msb > UPPER_BOUND)               // adjust capdac accordingly
-	{
-      if (capdac < FDC1004_CAPDAC_MAX)
-	  capdac++;
-    }
-	else if (msb < LOWER_BOUND)
-	{
-      if (capdac > 0)
-	  capdac--;
-    }
   }
+  // TODO: Convert to water level based on calibration
+  // e.g., map(capacitance, EMPTY_VALUE, FULL_VALUE, 0, 100);
   float water_level = 0;  // TODO: fix later
-
 
   // Update Display
   // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
@@ -142,14 +140,16 @@ void loop()
   tft.print(" %");
 
   // Debug output
-  if (DEBUG_MODE) {
-    Serial.print("Temp [°C]: ");
-    Serial.println(temperature);
-    Serial.print("Pressure [Bar]: ");
-    Serial.println(pressure);
+  if (DEBUG_CAPACITANCE) {
     Serial.print("Water Tank [%]: ");
     Serial.println(water_level);
   }
+
+  //   Serial.print("Temp [°C]: ");
+  //   Serial.println(temperature);
+  //   Serial.print("Pressure [Bar]: ");
+  //   Serial.println(pressure);
+  // }
 
   delay(500);
 }
