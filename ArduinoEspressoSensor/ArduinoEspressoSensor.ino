@@ -30,11 +30,14 @@ float vin = 0.0;
 float pressure = 0.0;
 
 // Capacitive coupling (water level)
-#define UPPER_BOUND  0X4000                 // max readout capacitance
-#define LOWER_BOUND  (-1 * UPPER_BOUND)
 #define CHANNEL 0                          // channel of the FDC1004 to be read
 #define MEASUREMENT 0                       // measurEment channel
+#define LOWER_BOUND  5
+#define UPPER_BOUND  9                 // max readout capacitance in pF
 int capdac = 0;
+int16_t msb;
+int32_t capacitance;
+float capacitance_pF;
 char result[100];
 FDC1004 fdc; // Create an FDC1004 object
 
@@ -102,20 +105,27 @@ void loop()
   // If readMeasurement returns false, it means the reading was successful
   if (! fdc.readMeasurement(MEASUREMENT, value))
   {
-    int16_t msb = (int16_t) value[0];  // Most significant byte
-    int32_t capacitance = ((int32_t)457) * ((int32_t)msb);  // Gain factor: 457 (datasheet says 16-bit range = ±16.384pF → gain ≈ 16.384pF / 2^15 ≈ 500 af/LSB; here it's 457 af/LSB).
-    capacitance /= 1000;  // Convert to femtofarads (fF) for easier handling
-    Serial.print("Capacitance: ");
-    Serial.print(capacitance);
-    Serial.println(" fF");
-    capacitance += ((int32_t)3028) * ((int32_t)capdac);  // Offset factor: 3028
-    Serial.print((((float)capacitance/1000)),4);  // Prints the capacitance in picofarads, to 4 decimal places.
-    Serial.println("  pf, ");
-  }
-  // TODO: Convert to water level based on calibration
-  // e.g., map(capacitance, EMPTY_VALUE, FULL_VALUE, 0, 100);
-  float water_level = 0;  // TODO: fix later
+    msb = (int16_t)value[0];  // Most significant byte
+    capacitance = 457L * msb + 3028L * capdac * 1000L;  // Gain factor: 457 (datasheet says 16-bit range = ±16.384pF → gain ≈ 16.384pF / 2^15 ≈ 500 af/LSB; here it's 457 af/LSB). there is also an offset factor of 3028.
+    capacitance_pF = capacitance / 1e6;
 
+    //     msb = (int16_t) value[0];  // Most significant byte
+    // capacitance = ((int32_t)457) * ((int32_t)msb);  // Gain factor: 457 (datasheet says 16-bit range = ±16.384pF → gain ≈ 16.384pF / 2^15 ≈ 500 af/LSB; here it's 457 af/LSB).
+    // capacitance /= 1000;  // Convert to femtofarads (fF) for easier handling
+    // capacitance += ((int32_t)3028) * ((int32_t)capdac);  // Offset factor: 3028
+    // capacitance_pf /= float(capacitance) / 1000;  // Convert to picofarads (pF)
+    if (DEBUG_CAPACITANCE) {
+      Serial.print((capacitance_pF),4);  // Prints the capacitance
+      Serial.println("  pf, ");
+    }
+  }
+  // Convert to water level based on calibration
+  // Note: This is a placeholder conversion. You need to calibrate this based on your specific sensor and tank.
+  // For example, if 0 fF corresponds to 0% and 40000 fF corresponds to 100%, you can use a linear mapping.
+  // Adjust the conversion based on your calibration
+  float water_level = (capacitance_pF - LOWER_BOUND) / (UPPER_BOUND - LOWER_BOUND) * 100;
+  // Here we assume a linear mapping for demonstration purposes
+  
   // Update Display
   // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
   tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
