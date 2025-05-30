@@ -1,13 +1,13 @@
 #include <RTClib.h>
 #include <Arduino.h>
-// #include <U8g2lib.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_MAX31855.h> // for thermal sensor
-#include <SoftwareSerial.h> // for ultrasonic-- might not be needed
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <SPI.h>
+#include <Wire.h> // for capacitive coupling sensor
+#include <Protocentral_FDC1004.h> // for capacitive coupling sensor
 
 // Debugging
 #define DEBUG_MODE true
@@ -28,14 +28,14 @@ float vout = 0.0;
 float vin = 0.0;
 float pressure = 0.0;
 
-// Ultrasonic distance sensor (water tank level)
-const int trigPin = 3;
-const int echoPin = 4;
-long duration;
-float distance;
-// Values below need to be calibrated
-const float distance_full = 5;  // cm
-const float distance_empty = 20;  // cm
+// Capacitive coupling (water level)
+#define UPPER_BOUND  0X4000                 // max readout capacitance
+#define LOWER_BOUND  (-1 * UPPER_BOUND)
+#define CHANNEL 0                          // channel to be read
+#define MEASURMENT 0                       // measurment channel
+int capdac = 0;
+char result[100];
+FDC1004 FDC;
 
 /* Create an rtc object */
 RTC_DS3231 rtc;
@@ -74,10 +74,6 @@ void setup() {
 
   // Pressure sensor
   pinMode(sensorPin, INPUT);
-
-  // Ultrasound
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
 }
 
 void loop()
@@ -95,14 +91,32 @@ void loop()
   pressure = (vin < 0.5) ? 0.0 : (vin * 20) - 10;  // Clip pressure at 0 if vin < 0.5
 
   // Read Water Tank Level
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
-  distance = duration * 0.034 / 2;
-  float water_level = 100 - 100 * (distance - distance_full) / (distance_empty - distance_full);
+  FDC.configureMeasurementSingle(MEASURMENT, CHANNEL, capdac);
+  FDC.triggerSingleMeasurement(MEASURMENT, FDC1004_100HZ);
+  delay(500); // wait for completion
+  uint16_t value[2];
+  if (! FDC.readMeasurement(MEASURMENT, value))
+  {
+    int16_t msb = (int16_t) value[0];
+    int32_t capacitance = ((int32_t)457) * ((int32_t)msb); //in attofarads
+    capacitance /= 1000;   //in femtofarads
+    capacitance += ((int32_t)3028) * ((int32_t)capdac);
+    Serial.print((((float)capacitance/1000)),4);
+    Serial.println("  pf, ");
+    // TODO: put code below in function
+    if (msb > UPPER_BOUND)               // adjust capdac accordingly
+	{
+      if (capdac < FDC1004_CAPDAC_MAX)
+	  capdac++;
+    }
+	else if (msb < LOWER_BOUND)
+	{
+      if (capdac > 0)
+	  capdac--;
+    }
+  }
+  float water_level = 0;  // TODO: fix later
+
 
   // Update Display
   // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
