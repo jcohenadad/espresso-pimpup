@@ -34,3 +34,15 @@ This project is inspired by the following sources:
 - https://www.reddit.com/r/ranciliosilvia/search/?q=pid&cId=b4224602-a8c1-4eaf-a334-e28db799d089&iId=4bad28b5-60e2-4aab-9f05-2a9fabc166d9
 - https://github.com/brycesub/silvia-pi?tab=readme-ov-file
 
+## Upload/Monitor Arduino code
+
+Using CLI (you need to adjust the correct port):
+
+```shell
+# Compile
+arduino-cli compile --fqbn arduino:avr:nano ArduinoEspressoSensor/
+# Upload
+arduino-cli upload ArduinoEspressoSensor -b arduino:avr:nano -p /dev/cu.usbserial-BG0046HD
+# Monitor
+arduino-cli monitor -p /dev/cu.usbserial-BG0046HD --config 9600
+```
