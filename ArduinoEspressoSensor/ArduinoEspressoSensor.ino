@@ -32,8 +32,8 @@ float pressure = 0.0;
 // Capacitive coupling (water level)
 #define CHANNEL 0                          // channel of the FDC1004 to be read
 #define MEASUREMENT 0                       // measurEment channel
-#define LOWER_BOUND  5
-#define UPPER_BOUND  9                 // max readout capacitance in pF
+#define LOWER_BOUND  5  // min readout capacitance in pF (find experimentally, and set DEBUG_CAPACITANCE=true)
+#define UPPER_BOUND  9  // max readout capacitance in pF
 int capdac = 0;
 int16_t msb;
 int32_t capacitance;
@@ -108,21 +108,12 @@ void loop()
     msb = (int16_t)value[0];  // Most significant byte
     capacitance = 457L * msb + 3028L * capdac * 1000L;  // Gain factor: 457 (datasheet says 16-bit range = ±16.384pF → gain ≈ 16.384pF / 2^15 ≈ 500 af/LSB; here it's 457 af/LSB). there is also an offset factor of 3028.
     capacitance_pF = capacitance / 1e6;
-
-    //     msb = (int16_t) value[0];  // Most significant byte
-    // capacitance = ((int32_t)457) * ((int32_t)msb);  // Gain factor: 457 (datasheet says 16-bit range = ±16.384pF → gain ≈ 16.384pF / 2^15 ≈ 500 af/LSB; here it's 457 af/LSB).
-    // capacitance /= 1000;  // Convert to femtofarads (fF) for easier handling
-    // capacitance += ((int32_t)3028) * ((int32_t)capdac);  // Offset factor: 3028
-    // capacitance_pf /= float(capacitance) / 1000;  // Convert to picofarads (pF)
     if (DEBUG_CAPACITANCE) {
       Serial.print((capacitance_pF),4);  // Prints the capacitance
       Serial.println("  pf, ");
     }
   }
   // Convert to water level based on calibration
-  // Note: This is a placeholder conversion. You need to calibrate this based on your specific sensor and tank.
-  // For example, if 0 fF corresponds to 0% and 40000 fF corresponds to 100%, you can use a linear mapping.
-  // Adjust the conversion based on your calibration
   float water_level = (capacitance_pF - LOWER_BOUND) / (UPPER_BOUND - LOWER_BOUND) * 100;
   // Here we assume a linear mapping for demonstration purposes
   
