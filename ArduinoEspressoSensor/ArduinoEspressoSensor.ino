@@ -43,6 +43,12 @@ float capacitance_pF;
 char result[100];
 FDC1004 fdc; // Create an FDC1004 object
 
+// Global variables for brewing state
+bool isBrewing = false;
+unsigned long brewStartTime = 0;
+unsigned long brewDuration = 0;
+const float pressureThreshold = 0.5; // Set your threshold (in Bar)
+
 /* Create an rtc object */
 RTC_DS3231 rtc;
 
@@ -87,24 +93,6 @@ void setup() {
 
 void loop()
 {
-  // Read Temperature
-  float temperature = thermocouple.readCelsius();
-  // Error handling
-  if (isnan(temperature)) {
-    temperature = -1000;
-  }
-
-  // Read Pressure
-  int pressure_voltage = analogRead(sensorPin);
-  if (DEBUG_PRESSURE) {
-    Serial.print("Pressure ADC value: ");
-    Serial.println(pressure_voltage);
-  }
-  Serial.print("Raw ADC value: ");
-  Serial.println(pressure_voltage);
-  vin = (pressure_voltage * 5.0) / 1024.0;
-  pressure = (vin < 0.5) ? 0.0 : (vin * 20) - 10;  // Clip pressure at 0 if vin < 0.5
-
   // Read Water Tank Level
   fdc.configureMeasurementSingle(MEASUREMENT, CHANNEL, capdac);
   fdc.triggerSingleMeasurement(MEASUREMENT, FDC1004_100HZ);
@@ -124,29 +112,73 @@ void loop()
   // Convert to water level based on calibration
   float water_level = (capacitance_pF - LOWER_BOUND) / (UPPER_BOUND - LOWER_BOUND) * 100;
   // Here we assume a linear mapping for demonstration purposes
+
+  // Read Temperature
+  float temperature = thermocouple.readCelsius();
+  // Error handling
+  if (isnan(temperature)) {
+    temperature = -1000;
+  }
+
+  // Read Pressure
+  int pressure_voltage = analogRead(sensorPin);
+  if (DEBUG_PRESSURE) {
+    Serial.print("Pressure ADC value: ");
+    Serial.println(pressure_voltage);
+  }
+  Serial.print("Raw ADC value: ");
+  Serial.println(pressure_voltage);
+  vin = (pressure_voltage * 5.0) / 1024.0;
+  pressure = (vin < 0.5) ? 0.0 : (vin * 20) - 10;  // Clip pressure at 0 if vin < 0.5
+
+  // Brew timer logic
+  if (!isBrewing && pressure > pressureThreshold) {
+    isBrewing = true;
+    brewStartTime = millis();
+  }
+
+  if (isBrewing && pressure < pressureThreshold) {
+    isBrewing = false;
+    brewDuration = millis() - brewStartTime;
+  }
   
   // Update Display
   // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
+  
   tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-  tft.setCursor(10, 10);
+  tft.setCursor(10, 20);
+  tft.setTextSize(3);
+  tft.print("Water: ");
+  tft.print((int)water_level, 1);
+  tft.print(" %");
+  
+  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+  tft.setCursor(10, 60);
   tft.setTextSize(3);
   tft.print("Temp: ");
   tft.print(temperature, 1);
   tft.print(" C");
 
   tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-  tft.setCursor(10, 50);
+  tft.setCursor(10, 100);
   tft.setTextSize(3);
   tft.print("Pressure: ");
   tft.print(pressure, 1);
   tft.print(" Bar");
 
+
   tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-  tft.setCursor(10, 90);
+  tft.setCursor(10, 140);
   tft.setTextSize(3);
-  tft.print("Water: ");
-  tft.print((int)water_level, 1);
-  tft.print(" %");
+  tft.print("Timer: ");
+  if (isBrewing) {
+    unsigned long elapsed = (millis() - brewStartTime) / 1000;
+    tft.print(elapsed);
+    tft.print(" s");
+  } else if (brewDuration > 0) {
+    tft.print(brewDuration / 1000);
+    tft.print(" s");
+  }
 
   // Debug output
   if (DEBUG_CAPACITANCE) {
