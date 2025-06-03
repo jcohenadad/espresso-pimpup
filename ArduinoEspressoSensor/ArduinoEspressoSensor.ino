@@ -46,8 +46,11 @@ FDC1004 fdc; // Create an FDC1004 object
 // Global variables for brewing state
 bool isBrewing = false;
 unsigned long brewStartTime = 0;
-unsigned long brewDuration = 0;
+float brewDuration = 0.0;
 const float pressureThreshold = 0.5; // Set your threshold (in Bar)
+int blinkCount = 0;
+unsigned long lastBlinkTime = 0;
+bool showTimer = true;
 
 /* Create an rtc object */
 RTC_DS3231 rtc;
@@ -96,7 +99,7 @@ void loop()
   // Read Water Tank Level
   fdc.configureMeasurementSingle(MEASUREMENT, CHANNEL, capdac);
   fdc.triggerSingleMeasurement(MEASUREMENT, FDC1004_100HZ);
-  delay(10); // Must wait at least 9ms for conversion
+  delay(100); // Must wait at least 9ms for conversion. We use this as our loop delay.
   uint16_t value[2];
   // If readMeasurement returns false, it means the reading was successful
   if (! fdc.readMeasurement(MEASUREMENT, value))
@@ -139,7 +142,7 @@ void loop()
 
   if (isBrewing && pressure < pressureThreshold) {
     isBrewing = false;
-    brewDuration = millis() - brewStartTime;
+    brewDuration = (millis() - brewStartTime) / 1000.0; // Save in seconds (float)
   }
   
   // Update Display
@@ -172,12 +175,29 @@ void loop()
   tft.setTextSize(3);
   tft.print("Timer: ");
   if (isBrewing) {
-    unsigned long elapsed = (millis() - brewStartTime) / 1000;
-    tft.print(elapsed);
-    tft.print(" s");
-  } else if (brewDuration > 0) {
-    tft.print(brewDuration / 1000);
-    tft.print(" s");
+  float elapsed = (millis() - brewStartTime) / 1000.0;
+  tft.print(elapsed, 1);  // one decimal
+  tft.print(" s");
+  } 
+  else if (brewDuration > 0) {
+    // Blink a few times after brewing stops
+    if (blinkCount < 6) { // 6 toggles = 3 blinks
+      if (millis() - lastBlinkTime > 500) {
+        showTimer = !showTimer;
+        lastBlinkTime = millis();
+        blinkCount++;
+      }
+      if (showTimer) {
+        tft.print(brewDuration, 1);
+        tft.print(" s");
+      } else {
+        tft.print("        ");
+      }
+    } else {
+      // After 3 blinks, always show final duration
+      tft.print(brewDuration, 1);
+      tft.print(" s");
+    }
   }
 
   // Debug output
@@ -194,7 +214,7 @@ void loop()
     Serial.println(pressure);
   }
 
-  delay(200);
+  // delay(200); 
 }
 
 void print2digits(int number) {
