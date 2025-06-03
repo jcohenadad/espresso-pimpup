@@ -161,11 +161,6 @@ void loop()
     Serial.print("Pressure [Bar]: ");
     Serial.println(pressure);
   }
-  //   Serial.print("Temp [°C]: ");
-  //   Serial.println(temperature);
-  //   Serial.print("Pressure [Bar]: ");
-  //   Serial.println(pressure);
-  // }
 
   delay(500);
 }
