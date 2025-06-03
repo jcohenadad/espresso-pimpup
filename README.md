@@ -17,6 +17,33 @@ DIY project to pimp up my espresso machine to display various measures
   - [C0603C104M4RACTU](https://www.digikey.ca/en/products/detail/kemet/C0603C104M4RACTU/411098) | Decoupling Capacitors
   - [RC0603FR-074K7L](https://www.digikey.ca/en/products/detail/yageo/rc0603fr-074k7l/727212) | Pull-up Resistors for I2C
 
+## Upload/Monitor Arduino code
+
+Using CLI (you need to adjust the correct port):
+
+```shell
+# Compile
+arduino-cli compile --fqbn arduino:avr:nano ArduinoEspressoSensor/
+# Upload
+arduino-cli upload ArduinoEspressoSensor -b arduino:avr:nano -p /dev/cu.usbserial-BG0046HD
+# Monitor
+arduino-cli monitor -p /dev/cu.usbserial-BG0046HD --config 9600
+```
+
+## Calibration
+
+Before using the setup, some calibration is needed.
+
+### Water tank
+
+- Activate debug mode: `DEBUG_CAPACITANCE false`
+- Check capacitance values for empty and full tank.
+- Enter respective values for variables `LOWER_BOUND` and `UPPER_BOUND`
+
+### Timer
+
+Timer for brewing duration is based on the variable `pressureThreshold`, which can be adjusted if needed.
+
 ## References
 
 This project is inspired by the following sources:
@@ -33,16 +60,3 @@ This project is inspired by the following sources:
   - https://www.seattlecoffeegear.com/cdn/shop/files/silvia-pid-installation-guide.pdf?v=8847236618586878957
 - https://www.reddit.com/r/ranciliosilvia/search/?q=pid&cId=b4224602-a8c1-4eaf-a334-e28db799d089&iId=4bad28b5-60e2-4aab-9f05-2a9fabc166d9
 - https://github.com/brycesub/silvia-pi?tab=readme-ov-file
-
-## Upload/Monitor Arduino code
-
-Using CLI (you need to adjust the correct port):
-
-```shell
-# Compile
-arduino-cli compile --fqbn arduino:avr:nano ArduinoEspressoSensor/
-# Upload
-arduino-cli upload ArduinoEspressoSensor -b arduino:avr:nano -p /dev/cu.usbserial-BG0046HD
-# Monitor
-arduino-cli monitor -p /dev/cu.usbserial-BG0046HD --config 9600
-```
