@@ -11,7 +11,9 @@
 
 // Debugging
 #define DEBUG_MODE true
-#define DEBUG_CAPACITANCE true
+#define DEBUG_TEMPERATURE true
+#define DEBUG_PRESSURE true
+#define DEBUG_CAPACITANCE false
 
 // Display
 #define TFT_CS        10 // chip select
@@ -24,7 +26,7 @@ Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 Adafruit_MAX31855 thermocouple(MAX_CS);
 
 // Pressure sensor
-int sensorPin = A1;
+int sensorPin = A0;
 float vout = 0.0;
 float vin = 0.0;
 float pressure = 0.0;
@@ -94,6 +96,12 @@ void loop()
 
   // Read Pressure
   int pressure_voltage = analogRead(sensorPin);
+  if (DEBUG_PRESSURE) {
+    Serial.print("Pressure ADC value: ");
+    Serial.println(pressure_voltage);
+  }
+  Serial.print("Raw ADC value: ");
+  Serial.println(pressure_voltage);
   vin = (pressure_voltage * 5.0) / 1024.0;
   pressure = (vin < 0.5) ? 0.0 : (vin * 20) - 10;  // Clip pressure at 0 if vin < 0.5
 
@@ -145,7 +153,14 @@ void loop()
     Serial.print("Water Tank [%]: ");
     Serial.println(water_level);
   }
-
+  if (DEBUG_TEMPERATURE) {
+    Serial.print("Temperature [°C]: ");
+    Serial.println(temperature);
+  }
+  if (DEBUG_PRESSURE) {
+    Serial.print("Pressure [Bar]: ");
+    Serial.println(pressure);
+  }
   //   Serial.print("Temp [°C]: ");
   //   Serial.println(temperature);
   //   Serial.print("Pressure [Bar]: ");
