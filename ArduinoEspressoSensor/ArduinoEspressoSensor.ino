@@ -49,7 +49,7 @@ RTC_DS3231 rtc;
 void setup() {
   Serial.begin(9600);
 
-  delay(1000);  // Give some time for Serial communication to stabilize
+  delay(100);  // Give some time for Serial communication to stabilize
 
   // Initialize display
   // Serial.print(F("Hello!"));
@@ -162,7 +162,7 @@ void loop()
     Serial.println(pressure);
   }
 
-  delay(500);
+  delay(200);
 }
 
 void print2digits(int number) {
