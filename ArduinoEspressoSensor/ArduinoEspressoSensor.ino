@@ -58,7 +58,7 @@ RTC_DS3231 rtc;
 void setup() {
   Serial.begin(9600);
 
-  delay(100);  // Give some time for Serial communication to stabilize
+  delay(1000);  // Give some time for Serial communication to stabilize
 
   // Initialize display
   // Serial.print(F("Hello!"));
@@ -148,14 +148,14 @@ void loop()
   // Update Display
   // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
   
-  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+  tft.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
   tft.setCursor(10, 20);
   tft.setTextSize(3);
   tft.print("Water: ");
   tft.print((int)water_level, 1);
   tft.print(" %");
   
-  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+  tft.setTextColor(ST77XX_RED, ST77XX_BLACK);
   tft.setCursor(10, 60);
   tft.setTextSize(3);
   tft.print("Temp: ");
