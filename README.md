@@ -17,6 +17,10 @@ DIY project to pimp up my espresso machine to display various measures
   - [C0603C104M4RACTU](https://www.digikey.ca/en/products/detail/kemet/C0603C104M4RACTU/411098) | Decoupling Capacitors
   - [RC0603FR-074K7L](https://www.digikey.ca/en/products/detail/yageo/rc0603fr-074k7l/727212) | Pull-up Resistors for I2C
 
+## Pictures
+
+https://photos.app.goo.gl/eQaupZRUNoXkHYi69
+
 ## Upload/Monitor Arduino code
 
 Using CLI (you need to adjust the correct port):
