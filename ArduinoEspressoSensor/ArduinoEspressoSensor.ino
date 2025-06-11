@@ -10,10 +10,10 @@
 #include <Protocentral_FDC1004.h> // for capacitive coupling sensor
 
 // Debugging
-#define DEBUG_MODE true
-#define DEBUG_TEMPERATURE true
-#define DEBUG_PRESSURE true
-#define DEBUG_CAPACITANCE false
+// #define DEBUG_MODE true
+#define DEBUG_TEMPERATURE false
+#define DEBUG_PRESSURE false
+#define DEBUG_CAPACITANCE true
 
 // Display
 #define TFT_CS        10 // chip select
@@ -32,10 +32,10 @@ float vin = 0.0;
 float pressure = 0.0;
 
 // Capacitive coupling (water level)
-#define CHANNEL 0                          // channel of the FDC1004 to be read
-#define MEASUREMENT 0                       // measurEment channel
-#define LOWER_BOUND  5  // min readout capacitance in pF (find experimentally, and set DEBUG_CAPACITANCE=true)
-#define UPPER_BOUND  9  // max readout capacitance in pF
+#define CHANNEL 0  // channel of the FDC1004 to be read
+#define MEASUREMENT 0  // measurEment channel
+#define LOWER_BOUND  9  // min readout capacitance in pF (find experimentally, and set DEBUG_CAPACITANCE=true)
+#define UPPER_BOUND  9.65  // max readout capacitance in pF
 int capdac = 0;
 int16_t msb;
 int32_t capacitance;
@@ -99,7 +99,7 @@ void loop()
   // Read Water Tank Level
   fdc.configureMeasurementSingle(MEASUREMENT, CHANNEL, capdac);
   fdc.triggerSingleMeasurement(MEASUREMENT, FDC1004_100HZ);
-  delay(100); // Must wait at least 9ms for conversion. We use this as our loop delay.
+  delay(800); // Must wait at least 9ms for conversion. We use this as our loop delay.
   uint16_t value[2];
   // If readMeasurement returns false, it means the reading was successful
   if (! fdc.readMeasurement(MEASUREMENT, value))
@@ -108,6 +108,9 @@ void loop()
     capacitance = 457L * msb + 3028L * capdac * 1000L;  // Gain factor: 457 (datasheet says 16-bit range = ±16.384pF → gain ≈ 16.384pF / 2^15 ≈ 500 af/LSB; here it's 457 af/LSB). there is also an offset factor of 3028.
     capacitance_pF = capacitance / 1e6;
     if (DEBUG_CAPACITANCE) {
+      Serial.print("msb: ");
+      Serial.println((msb),4);
+      Serial.print("capacitance_pF: ");
       Serial.print((capacitance_pF),4);  // Prints the capacitance
       Serial.println("  pf, ");
     }
@@ -128,9 +131,9 @@ void loop()
   if (DEBUG_PRESSURE) {
     Serial.print("Pressure ADC value: ");
     Serial.println(pressure_voltage);
+    Serial.print("Raw ADC value: ");
+    Serial.println(pressure_voltage);
   }
-  Serial.print("Raw ADC value: ");
-  Serial.println(pressure_voltage);
   vin = (pressure_voltage * 5.0) / 1024.0;
   pressure = (vin < 0.5) ? 0.0 : (vin * 20) - 10;  // Clip pressure at 0 if vin < 0.5
 
@@ -213,8 +216,7 @@ void loop()
     Serial.print("Pressure [Bar]: ");
     Serial.println(pressure);
   }
-
-  // delay(200); 
+  Serial.println("------------------------");
 }
 
 void print2digits(int number) {
