@@ -99,7 +99,7 @@ void loop()
   // Read Water Tank Level
   fdc.configureMeasurementSingle(MEASUREMENT, CHANNEL, capdac);
   fdc.triggerSingleMeasurement(MEASUREMENT, FDC1004_100HZ);
-  delay(800); // Must wait at least 9ms for conversion. We use this as our loop delay.
+  delay(100); // Must wait at least 9ms for conversion. We use this as our loop delay.
   uint16_t value[2];
   // If readMeasurement returns false, it means the reading was successful
   if (! fdc.readMeasurement(MEASUREMENT, value))
@@ -131,22 +131,20 @@ void loop()
   if (DEBUG_PRESSURE) {
     Serial.print("Pressure ADC value: ");
     Serial.println(pressure_voltage);
-    Serial.print("Raw ADC value: ");
-    Serial.println(pressure_voltage);
   }
   vin = (pressure_voltage * 5.0) / 1024.0;
   pressure = (vin < 0.5) ? 0.0 : (vin * 20) - 10;  // Clip pressure at 0 if vin < 0.5
 
   // Brew timer logic
-  if (!isBrewing && pressure > pressureThreshold) {
-    isBrewing = true;
-    brewStartTime = millis();
-  }
+  // if (!isBrewing && pressure > pressureThreshold) {
+  //   isBrewing = true;
+  //   brewStartTime = millis();
+  // }
 
-  if (isBrewing && pressure < pressureThreshold) {
-    isBrewing = false;
-    brewDuration = (millis() - brewStartTime) / 1000.0; // Save in seconds (float)
-  }
+  // if (isBrewing && pressure < pressureThreshold) {
+  //   isBrewing = false;
+  //   brewDuration = (millis() - brewStartTime) / 1000.0; // Save in seconds (float)
+  // }
   
   // Update Display
   // tft.fillRect(0, 0, 240, 40, ST77XX_BLACK);  // Clear temperature section (adjust height for visibility)
@@ -173,35 +171,35 @@ void loop()
   tft.print(" Bar");
 
 
-  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-  tft.setCursor(10, 140);
-  tft.setTextSize(3);
-  tft.print("Timer: ");
-  if (isBrewing) {
-  float elapsed = (millis() - brewStartTime) / 1000.0;
-  tft.print(elapsed, 1);  // one decimal
-  tft.print(" s");
-  } 
-  else if (brewDuration > 0) {
-    // Blink a few times after brewing stops
-    if (blinkCount < 6) { // 6 toggles = 3 blinks
-      if (millis() - lastBlinkTime > 500) {
-        showTimer = !showTimer;
-        lastBlinkTime = millis();
-        blinkCount++;
-      }
-      if (showTimer) {
-        tft.print(brewDuration, 1);
-        tft.print(" s");
-      } else {
-        tft.print("        ");
-      }
-    } else {
-      // After 3 blinks, always show final duration
-      tft.print(brewDuration, 1);
-      tft.print(" s");
-    }
-  }
+  // tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+  // tft.setCursor(10, 140);
+  // tft.setTextSize(3);
+  // tft.print("Timer: ");
+  // if (isBrewing) {
+  // float elapsed = (millis() - brewStartTime) / 1000.0;
+  // tft.print(elapsed, 1);  // one decimal
+  // tft.print(" s");
+  // } 
+  // else if (brewDuration > 0) {
+  //   // Blink a few times after brewing stops
+  //   if (blinkCount < 6) { // 6 toggles = 3 blinks
+  //     if (millis() - lastBlinkTime > 500) {
+  //       showTimer = !showTimer;
+  //       lastBlinkTime = millis();
+  //       blinkCount++;
+  //     }
+  //     if (showTimer) {
+  //       tft.print(brewDuration, 1);
+  //       tft.print(" s");
+  //     } else {
+  //       tft.print("        ");
+  //     }
+  //   } else {
+  //     // After 3 blinks, always show final duration
+  //     tft.print(brewDuration, 1);
+  //     tft.print(" s");
+  //   }
+  // }
 
   // Debug output
   if (DEBUG_CAPACITANCE) {
