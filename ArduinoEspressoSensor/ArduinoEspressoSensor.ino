@@ -17,12 +17,12 @@
 
 // Display
 #define TFT_CS        10 // chip select
-#define TFT_RST        9 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_RST       -1 // set to -1 means the pin 7 (RST) should not be connected
 #define TFT_DC         8 // data/command
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 
 // Temperature sensor
-#define MAX_CS        6
+#define MAX_CS        9 // chip select pin for MAX31855
 Adafruit_MAX31855 thermocouple(MAX_CS);
 
 // Pressure sensor
@@ -32,6 +32,9 @@ float vin = 0.0;
 float pressure = 0.0;
 
 // Capacitive coupling (water level)
+// FDC1004 communicates over I²C, so you must connect:
+// - SCL (clock) of FDC1004 → A5 on Arduino Uno, or SCL pin on Nano
+// - SDA (data) of FDC1004 → A4 on Uno, or SDA on Nano
 #define CHANNEL 0  // channel of the FDC1004 to be read
 #define MEASUREMENT 0  // measurEment channel
 #define LOWER_BOUND  9  // min readout capacitance in pF (find experimentally, and set DEBUG_CAPACITANCE=true)
