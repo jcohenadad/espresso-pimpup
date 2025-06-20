@@ -4,6 +4,8 @@ DIY project to pimp up my espresso machine to display various measures
 
 ## Material
 
+- Power
+  - [MEAN WELL USA Inc. RS-15-5 AC/DC CONVERTER 5V 15W](https://www.digikey.ca/en/products/detail/mean-well-usa-inc/RS-15-5/7706168)
 - Display
   - [Graphic LCD Display Module IPS (In-Plane Switching) SPI 1.69"](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/104990802/21526011)
   - JST 8-Pin Connector 1.0mm 30cm
