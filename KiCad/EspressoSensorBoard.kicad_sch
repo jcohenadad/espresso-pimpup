@@ -4077,6 +4077,16 @@
 	)
 	(wire
 		(pts
+			(xy 222.25 58.42) (xy 224.79 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5772964c-990d-4694-8c65-648eb2b26bab")
+	)
+	(wire
+		(pts
 			(xy 190.5 63.5) (xy 191.77 63.5)
 		)
 		(stroke
@@ -4084,16 +4094,6 @@
 			(type default)
 		)
 		(uuid "5d212cf6-1771-45e7-9b66-7d80c239f0ca")
-	)
-	(wire
-		(pts
-			(xy 222.25 58.42) (xy 224.79 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "66113f68-226b-4568-9ddf-ba9e703bcaae")
 	)
 	(wire
 		(pts
@@ -4184,16 +4184,6 @@
 			(type default)
 		)
 		(uuid "87a066a1-c5d3-41e3-99f3-91e5f686f300")
-	)
-	(wire
-		(pts
-			(xy 222.25 55.88) (xy 224.79 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "89cd248c-2660-4906-8f1d-30802eb04969")
 	)
 	(wire
 		(pts
@@ -4338,6 +4328,16 @@
 	(wire
 		(pts
 			(xy 222.25 60.96) (xy 224.79 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d0511191-048a-4f4d-8648-b4781203f2ae")
+	)
+	(wire
+		(pts
+			(xy 222.25 63.5) (xy 224.79 63.5)
 		)
 		(stroke
 			(width 0)
@@ -5602,7 +5602,7 @@
 	)
 	(symbol
 		(lib_id "Connector:Screw_Terminal_01x03")
-		(at 229.87 58.42 0)
+		(at 229.87 60.96 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5611,15 +5611,6 @@
 		(fields_autoplaced yes)
 		(uuid "56beeffc-5c87-44b3-a3f3-bddb7b0a052e")
 		(property "Reference" "J9"
-			(at 232.41 57.1499 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Water_Level_Electrodes"
 			(at 232.41 59.6899 0)
 			(effects
 				(font
@@ -5628,8 +5619,17 @@
 				(justify left)
 			)
 		)
+		(property "Value" "Water_Level_Electrodes"
+			(at 232.41 62.2299 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
-			(at 229.87 58.42 0)
+			(at 229.87 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5638,7 +5638,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 229.87 58.42 0)
+			(at 229.87 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5647,7 +5647,7 @@
 			)
 		)
 		(property "Description" "Generic screw terminal, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 229.87 58.42 0)
+			(at 229.87 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
