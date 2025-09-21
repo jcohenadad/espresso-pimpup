@@ -8,6 +8,7 @@ DIY project to pimp up my espresso machine to display various measures
   - [MEAN WELL USA Inc. RS-15-5 AC/DC CONVERTER 5V 15W](https://www.digikey.ca/en/products/detail/mean-well-usa-inc/RS-15-5/7706168)
 - Display
   - [Graphic LCD Display Module IPS (In-Plane Switching) SPI 1.69"](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/104990802/21526011)
+  - [JST_GH_BM08B-GHS-TBT_1x08-1MP_P1.25mm](https://www.digikey.ca/en/products/detail/jst-sales-america-inc/BM08B-GHS-TBT/807852?gclsrc=aw.ds&gad_source=1&gad_campaignid=17336435733&gbraid=0AAAAADrbLli5oEjffKGIz3cFDlZDh-Ygs&gclid=Cj0KCQjwxL7GBhDXARIsAGOcmINM7B4UNUlhyg1x52t5Chnuqm-ZHCf1IbMgfFXe-W2ffWW6o2KoEtoaAo-bEALw_wcB)
   - JST 8-Pin Connector 1.0mm 30cm
 - Temperature
   - [K Type Thermocouple Temperature Sensor](https://www.amazon.ca/MECCANIXITY-Thermocouple-Temperature-Sensor-Stainless/dp/B0C998V2DP)
