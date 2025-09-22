@@ -10,7 +10,7 @@ DIY project to pimp up my espresso machine to display various measures
   - [Graphic LCD Display Module IPS (In-Plane Switching) SPI 1.69"](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/104990802/21526011)
   - [JST_GH_BM08B-GHS-TBT_1x08-1MP_P1.25mm](https://www.digikey.ca/en/products/detail/jst-sales-america-inc/BM08B-GHS-TBT/807852?gclsrc=aw.ds&gad_source=1&gad_campaignid=17336435733&gbraid=0AAAAADrbLli5oEjffKGIz3cFDlZDh-Ygs&gclid=Cj0KCQjwxL7GBhDXARIsAGOcmINM7B4UNUlhyg1x52t5Chnuqm-ZHCf1IbMgfFXe-W2ffWW6o2KoEtoaAo-bEALw_wcB)
   - [8 Position (pitch 1.25mm) Cable Assembly Rectangular Socket to Socket 450.00mm](https://www.digikey.ca/en/products/detail/molex/0151340805/6198210)
-  - 4x 2mm metric threading screws
+  - 4x 2mm metric threading screws https://github.com/jcohenadad/espresso-pimpup/issues/42
 - Temperature
   - [K Type Thermocouple Temperature Sensor](https://www.amazon.ca/MECCANIXITY-Thermocouple-Temperature-Sensor-Stainless/dp/B0C998V2DP)
   - [Thermocouple Amplifier MAX31855](https://www.amazon.ca/dp/B00SK8NDAI)
