@@ -8,16 +8,21 @@ DIY project to pimp up my espresso machine to display various measures
   - [MEAN WELL USA Inc. RS-15-5 AC/DC CONVERTER 5V 15W](https://www.digikey.ca/en/products/detail/mean-well-usa-inc/RS-15-5/7706168)
 - Display
   - [Graphic LCD Display Module IPS (In-Plane Switching) SPI 1.69"](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/104990802/21526011)
-  - JST 8-Pin Connector 1.0mm 30cm
+  - [JST_GH_BM08B-GHS-TBT_1x08-1MP_P1.25mm](https://www.digikey.ca/en/products/detail/jst-sales-america-inc/BM08B-GHS-TBT/807852?gclsrc=aw.ds&gad_source=1&gad_campaignid=17336435733&gbraid=0AAAAADrbLli5oEjffKGIz3cFDlZDh-Ygs&gclid=Cj0KCQjwxL7GBhDXARIsAGOcmINM7B4UNUlhyg1x52t5Chnuqm-ZHCf1IbMgfFXe-W2ffWW6o2KoEtoaAo-bEALw_wcB)
+  - [8 Position (pitch 1.25mm) Cable Assembly Rectangular Socket to Socket 450.00mm](https://www.digikey.ca/en/products/detail/molex/0151340805/6198210)
+  - 4x 2mm metric threading screws https://github.com/jcohenadad/espresso-pimpup/issues/42
 - Temperature
   - [K Type Thermocouple Temperature Sensor](https://www.amazon.ca/MECCANIXITY-Thermocouple-Temperature-Sensor-Stainless/dp/B0C998V2DP)
   - [Thermocouple Amplifier MAX31855](https://www.amazon.ca/dp/B00SK8NDAI)
-- Water level
-  - [FDC1004DGSR](https://www.digikey.ca/en/products/detail/texas-instruments/FDC1004DGSR/5250523) | 4-channel 16-bit capacitance-to-digital converter
-  - [LCQT-MSOP10](https://www.digikey.ca/en/products/detail/aries-electronics/LCQT-MSOP10/4754589) | To create the breakout board for the FDC1004 chip
-  - [WR-PHD 2.54 MM SOCKET HEADER 5 P](https://www.digikey.ca/en/products/detail/w%C3%BCrth-elektronik/61300511821/16608594) x 2 | To plug the breakout board on the main PCB
-  - [C0603C104M4RACTU](https://www.digikey.ca/en/products/detail/kemet/C0603C104M4RACTU/411098) | Decoupling Capacitors
-  - [RC0603FR-074K7L](https://www.digikey.ca/en/products/detail/yageo/rc0603fr-074k7l/727212) | Pull-up Resistors for I2C
+
+### Water level
+| Item | Quantity | Description |
+| ---- | -------- | ----------- |
+| [FDC1004DGSR](https://www.digikey.ca/en/products/detail/texas-instruments/FDC1004DGSR/5250523) | 1 | 4-channel 16-bit capacitance-to-digital converter |
+| [LCQT-MSOP10](https://www.digikey.ca/en/products/detail/aries-electronics/LCQT-MSOP10/4754589) | 1 | To create the breakout board for the FDC1004 chip |
+| [WR-PHD 2.54 MM SOCKET HEADER 5 P](https://www.digikey.ca/en/products/detail/w%C3%BCrth-elektronik/61300511821/16608594) | 2 | To plug the breakout board on the main PCB |
+| [C0603C104M4RACTU](https://www.digikey.ca/en/products/detail/kemet/C0603C104M4RACTU/411098) | 1 | Decoupling Capacitor |
+| [RC0603FR-074K7L](https://www.digikey.ca/en/products/detail/yageo/rc0603fr-074k7l/727212) | 2 | Pull-up Resistors for I2C |
 
 ## Pictures
 
