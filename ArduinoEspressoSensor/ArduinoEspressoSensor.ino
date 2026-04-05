@@ -15,6 +15,9 @@
 #define DEBUG_PRESSURE false
 #define DEBUG_CAPACITANCE true
 
+// Loop duration
+#define LOOP_DURATION 500  // in milliseconds
+
 // Display
 #define TFT_CS        10 // chip select
 #define TFT_RST       -1 // set to -1 means the pin 7 (RST) should not be connected
@@ -102,7 +105,7 @@ void loop()
   // Read Water Tank Level
   fdc.configureMeasurementSingle(MEASUREMENT, CHANNEL, capdac);
   fdc.triggerSingleMeasurement(MEASUREMENT, FDC1004_100HZ);
-  delay(100); // Must wait at least 9ms for conversion. We use this as our loop delay.
+  delay(LOOP_DURATION); // Must wait at least 9ms for conversion. We use this as our loop delay.
   uint16_t value[2];
   // If readMeasurement returns false, it means the reading was successful
   if (! fdc.readMeasurement(MEASUREMENT, value))
@@ -111,8 +114,8 @@ void loop()
     capacitance = 457L * msb + 3028L * capdac * 1000L;  // Gain factor: 457 (datasheet says 16-bit range = ±16.384pF → gain ≈ 16.384pF / 2^15 ≈ 500 af/LSB; here it's 457 af/LSB). there is also an offset factor of 3028.
     capacitance_pF = capacitance / 1e6;
     if (DEBUG_CAPACITANCE) {
-      Serial.print("msb: ");
-      Serial.println((msb),4);
+      // Serial.print("msb: ");
+      // Serial.println((msb),4);
       Serial.print("capacitance_pF: ");
       Serial.print((capacitance_pF),4);  // Prints the capacitance
       Serial.println("  pf, ");
@@ -205,10 +208,10 @@ void loop()
   // }
 
   // Debug output
-  if (DEBUG_CAPACITANCE) {
-    Serial.print("Water Tank [%]: ");
-    Serial.println(water_level);
-  }
+  // if (DEBUG_CAPACITANCE) {
+  //   Serial.print("Water Tank [%]: ");
+  //   Serial.println(water_level);
+  // }
   if (DEBUG_TEMPERATURE) {
     Serial.print("Temperature [°C]: ");
     Serial.println(temperature);
