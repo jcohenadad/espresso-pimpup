@@ -40,12 +40,13 @@ float pressure = 0.0;
 // - SDA (data) of FDC1004 → A4 on Uno, or SDA on Nano
 #define CHANNEL 0  // channel of the FDC1004 to be read
 #define MEASUREMENT 0  // measurEment channel
-#define LOWER_BOUND  9  // min readout capacitance in pF (find experimentally, and set DEBUG_CAPACITANCE=true)
-#define UPPER_BOUND  9.65  // max readout capacitance in pF
+#define LOWER_BOUND  6  // min readout capacitance in pF (find experimentally, and set DEBUG_CAPACITANCE=true)
+#define UPPER_BOUND  6.9  // max readout capacitance in pF
 int capdac = 0;
 int16_t msb;
 int32_t capacitance;
 float capacitance_pF;
+float capacitance_pF_old = LOWER_BOUND; // Store the last valid capacitance value for out-of-bounds handling
 char result[100];
 FDC1004 fdc; // Create an FDC1004 object
 
@@ -121,9 +122,24 @@ void loop()
       Serial.println("  pf, ");
     }
   }
+  // Set capacitance to previous capacitance_pF value, if it goes out of bounds
+  if (capacitance_pF < LOWER_BOUND || capacitance_pF > UPPER_BOUND) {
+    capacitance_pF = capacitance_pF_old;
+    if (DEBUG_CAPACITANCE) {
+      Serial.println("Capacitance out of bounds, using previous value.");
+    }
+  } else {
+    capacitance_pF_old = capacitance_pF;
+  }
+
   // Convert to water level based on calibration
   float water_level = (capacitance_pF - LOWER_BOUND) / (UPPER_BOUND - LOWER_BOUND) * 100;
   // Here we assume a linear mapping for demonstration purposes
+  if (DEBUG_CAPACITANCE) {
+    Serial.print("Water Level: ");
+    Serial.print((int)water_level, 1);
+    Serial.println(" %");
+  }
 
   // Read Temperature
   float temperature = thermocouple.readCelsius();
