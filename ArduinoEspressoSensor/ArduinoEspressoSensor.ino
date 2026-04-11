@@ -133,7 +133,7 @@ void loop()
   }
 
   // Convert to water level based on calibration
-  float water_level = (capacitance_pF - LOWER_BOUND) / (UPPER_BOUND - LOWER_BOUND) * 100;
+  float water_level = 100 - (capacitance_pF - LOWER_BOUND) / (UPPER_BOUND - LOWER_BOUND) * 100;
   // Here we assume a linear mapping for demonstration purposes
   if (DEBUG_CAPACITANCE) {
     Serial.print("Water Level: ");
